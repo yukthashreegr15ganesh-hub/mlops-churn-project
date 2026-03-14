@@ -60,3 +60,11 @@ with mlflow.start_run():
     )
 
     print(f"Model Accuracy: {acc}")
+import joblib
+import os
+
+os.makedirs("model", exist_ok=True)
+
+joblib.dump(model, "model/model.pkl")
+
+print("Model saved to model/model.pkl")
