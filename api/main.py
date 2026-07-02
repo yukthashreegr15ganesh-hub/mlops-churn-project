@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import pandas as pd
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 app = FastAPI()
 
-pipeline = joblib.load("model/pipeline.pkl")
+pipeline = joblib.load(PROJECT_ROOT / "model" / "pipeline.pkl")
 
 
 # Define input schema

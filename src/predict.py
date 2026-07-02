@@ -1,24 +1,21 @@
 import pandas as pd
 import joblib
+from pathlib import Path
 
-# Load model & features
-model = joblib.load("model/model.pkl")
-features = joblib.load("model/features.pkl")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+
+# Load pipeline
+pipeline = joblib.load(PROJECT_ROOT / "model" / "pipeline.pkl")
 
 # Load new data
-df = pd.read_csv("data/churn.csv")
+df = pd.read_csv(PROJECT_ROOT / "data" / "churn.csv")
 
-X = df.drop("Churn", axis=1)
+X = df.drop(["Churn", "customerID"], axis=1)
 
+# Ensure TotalCharges is numeric and drop NA to match training preprocessing
 X["TotalCharges"] = pd.to_numeric(X["TotalCharges"], errors="coerce")
-X = X.fillna(0)
+X = X.dropna()
 
-# One-hot encode
-X = pd.get_dummies(X)
-
-# Align columns
-X = X.reindex(columns=features, fill_value=0)
-
-# Predict
-preds = model.predict(X)
-print(preds[:10])
+# Predict using the full pipeline
+preds = pipeline.predict(X)
+print("Predictions:", preds[:10])
